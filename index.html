@@ -1,402 +1,281 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Happy Birthday Emily 🎉</title>
-<style>
-  /* Minimal, self-contained styles — no external resources */
-  :root{
-    --bg1:#0b0016; --bg2:#2f003f; --accent1:#ff6fb5; --accent2:#9b7cff; --soft:#fff2ff;
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%; margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial; -webkit-font-smoothing:antialiased}
-  body{
-    background: linear-gradient(270deg,var(--bg1),var(--bg2),#12001a);
-    background-size: 600% 600%;
-    animation: aurora 18s ease infinite;
-    color:var(--soft);
-    display:flex; align-items:center; justify-content:center; padding:20px;
-  }
-  @keyframes aurora {
-    0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Day for Emily</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Lora', 'serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 2s ease-in-out',
+                        'float': 'float 15s linear infinite',
+                        'pulse-glow': 'pulseGlow 2s infinite alternate',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: 0, transform: 'translateY(20px)' },
+                            '100%': { opacity: 1, transform: 'translateY(0)' },
+                        },
+                        float: {
+                            '0%': { transform: 'translateY(100vh) scale(0.5)', opacity: 0 },
+                            '10%': { opacity: 1 },
+                            '90%': { opacity: 1 },
+                            '100%': { transform: 'translateY(-100vh) scale(1.5)', opacity: 0 },
+                        },
+                        pulseGlow: { 
+                            '0%': { boxShadow: '0 0 10px rgba(255, 105, 180, 0.4)' },
+                            '100%': { boxShadow: '0 0 20px rgba(255, 105, 180, 0.8)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Richer, more romantic gradient */
+            background: linear-gradient(135deg, #fce3e7 0%, #ffc0cb 40%, #a29bfe 100%);
+            overflow-x: hidden; 
+        }
+        
+        /* Card styling */
+        .card {
+            background: rgba(255, 255, 255, 0.95); /* More opaque, cleaner look */
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 2rem; /* Even rounder */
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15); /* Stronger shadow */
+            transition: transform 0.3s ease;
+        }
 
-  .card{
-    width:100%; max-width:980px; border-radius:16px; overflow:hidden; position:relative;
-    padding:18px; display:grid; grid-template-columns: 1fr 360px; gap:16px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    box-shadow: 0 18px 60px rgba(0,0,0,0.6);
-  }
-  @media (max-width:920px){ .card{grid-template-columns:1fr} .side{order:2} }
+        .card:hover {
+            transform: scale(1.02); /* Little bounce on desktop/touch */
+        }
 
-  /* left (main) */
-  .main{padding:10px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px}
-  h1{font-size:20px; color:var(--accent1); margin:4px 0 0; text-shadow:0 6px 30px rgba(155,124,255,0.08)}
-  .subtitle{color:rgba(255,242,255,0.78); font-size:13px}
-  .photo{width:180px; height:180px; border-radius:16px; object-fit:cover; box-shadow:0 10px 30px rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.04)}
-
-  .timer{
-    display:flex; gap:8px; margin-top:6px; flex-wrap:wrap; justify-content:center;
-  }
-  .unit{
-    min-width:76px; padding:12px 10px; border-radius:12px; text-align:center;
-    background:linear-gradient(180deg, rgba(255,255,255,0.015), transparent);
-    border:1px solid rgba(255,255,255,0.03);
-  }
-  .unit strong{display:block; font-size:26px}
-  .unit small{display:block; margin-top:6px; color:rgba(255,242,255,0.72)}
-
-  .controls{display:flex; gap:10px; margin-top:10px; flex-wrap:wrap; justify-content:center}
-  .btn{padding:10px 14px; border-radius:12px; border:0; cursor:pointer; font-weight:700; background:linear-gradient(90deg,var(--accent1),var(--accent2)); color:#160017}
-  .btn.alt{background:transparent; color:var(--soft); border:1px solid rgba(255,255,255,0.06)}
-
-  /* right (side) */
-  .side{padding:12px; display:flex; flex-direction:column; gap:10px}
-  .card-title{display:flex; gap:10px; align-items:center}
-  .badge{width:48px;height:48px;border-radius:10px; display:grid; place-items:center; font-weight:700; background:linear-gradient(135deg,var(--accent2),var(--accent1))}
-  .wish-list{display:flex; flex-direction:column; gap:10px; overflow:auto; max-height:360px; padding-right:6px}
-  .wish{background:rgba(255,255,255,0.015); border-radius:10px; padding:10px; border:1px solid rgba(255,255,255,0.02)}
-  .quote{font-style:italic; color:rgba(255,242,255,0.86)}
-
-  /* celebration overlay */
-  .celebrate{
-    position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
-    background: radial-gradient(600px 300px at 50% 25%, rgba(155,124,255,0.06), transparent 20%), rgba(11,0,20,0.38);
-    z-index:40; gap:14px; padding:28px; border-radius:16px;
-    opacity:0; pointer-events:none; transform:scale(1.02); transition:all 560ms cubic-bezier(.16,.8,.4,1);
-  }
-  .celebrate.show{opacity:1; pointer-events:auto; transform:scale(1)}
-
-  .glow-title{font-size:28px; font-weight:800; letter-spacing:0.4px; color:var(--accent1); text-shadow: 0 10px 30px rgba(255,111,181,0.08)}
-  .cake{
-    width:220px; height:180px; border-radius:16px; background:linear-gradient(180deg,#fff8ff,#ffeef6); display:flex; align-items:center; justify-content:center; position:relative; box-shadow:0 16px 50px rgba(0,0,0,0.45)
-  }
-  .candles{position:absolute; top:-30px; left:50%; transform:translateX(-50%); display:flex; gap:8px}
-  .candle{width:8px; height:36px; background:linear-gradient(180deg,#ffd7a6,#ff9b6a); border-radius:6px; position:relative; box-shadow:0 6px 18px rgba(0,0,0,0.25)}
-  .flicker{position:absolute; top:-22px; left:50%; transform:translateX(-50%); font-size:18px; filter:drop-shadow(0 6px 16px rgba(255,140,0,0.45)); animation:flick 900ms infinite}
-  @keyframes flick{0%{opacity:0.6; transform:translateX(-50%) scale(0.92)}50%{opacity:1; transform:translateX(-50%) scale(1.08)}100%{opacity:0.7; transform:translateX(-50%) scale(0.95)}}
-
-  .messages{max-width:820px; text-align:center; color:var(--soft)}
-
-  /* floating particles (hearts/stars) */
-  .particles{pointer-events:none; position:absolute; inset:0; z-index:35}
-  .particle{position:absolute; font-size:18px; opacity:0.9; transform-origin:center; animation:floatUp linear infinite}
-  @keyframes floatUp{0%{transform:translateY(20vh) scale(0.9)}100%{transform:translateY(-110vh) scale(1.05) rotate(360deg)}}
-
-  footer{margin-top:10px; text-align:center; font-size:13px; color:rgba(255,242,255,0.45)}
-</style>
+        /* The heart-shaped animation particles */
+        .heart {
+            position: absolute;
+            font-size: 2rem;
+            animation: float 15s linear infinite;
+            z-index: 0;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 105, 180, 0.7);
+            transform: rotate(-45deg);
+        }
+        
+        .heart::before,
+        .heart::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 105, 180, 0.7);
+            border-radius: 50%;
+        }
+        
+        .heart::before { top: -10px; left: 0; }
+        .heart::after { top: 0; left: 10px; }
+        
+        /* Apply pulse glow only to the birthday view card */
+        #birthdayView .card-content {
+            animation: pulse-glow 2s infinite alternate;
+        }
+        
+        /* Set both to 'none' here. JS will force the correct one open. */
+        #countdownView, #birthdayView { display: none; }
+    </style>
 </head>
-<body>
-  <div class="card" role="main" aria-live="polite">
-    <div class="main">
-      <div style="display:flex;flex-direction:column;align-items:center;">
-        <h1>For Emily — Friendly Birthday Surprise</h1>
-        <div class="subtitle" id="subLabel">Countdown (Cambodia time)</div>
-        <img id="mainPhoto" class="photo" src="https://cdn.davex.site/cdn/image/Beede.png" alt="Emily photo">
-      </div>
+<body class="min-h-screen w-full flex items-center justify-center p-4 relative overflow-hidden">
 
-      <div class="timer" aria-hidden="false" style="margin-top:6px">
-        <div class="unit"><strong id="days">0</strong><small>days</small></div>
-        <div class="unit"><strong id="hours">00</strong><small>hours</small></div>
-        <div class="unit"><strong id="minutes">00</strong><small>minutes</small></div>
-        <div class="unit"><strong id="seconds">00</strong><small>seconds</small></div>
-      </div>
+    <div class="w-full max-w-md mx-auto z-10">
 
-      <div class="controls">
-        <button id="playBtn" class="btn">🎵 Play Song</button>
-        <button id="singBtn" class="btn alt">🎤 Sing (TTS)</button>
-        <button id="forceBtn" class="btn alt">✨ Celebrate now</button>
-      </div>
+        <div id="countdownView" class="card p-6 md:p-10 text-center animate-fade-in">
+            <h1 class="text-3xl font-bold text-gray-800">For Emily, A Very Special Friend</h1>
+            <h2 class="text-5xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600 my-4">
+                07 | November
+            </h2>
+            <p class="text-lg text-gray-600 mb-8 font-serif italic">Counting every second until your day arrives...</p>
+
+            <div class="grid grid-cols-4 gap-2 md:gap-4">
+                <div class="bg-pink-100 p-4 rounded-xl shadow-lg">
+                    <div id="days" class="text-4xl md:text-5xl font-extrabold text-pink-700">00</div>
+                    <div class="text-sm text-pink-800 mt-1">Days</div>
+                </div>
+                <div class="bg-pink-100 p-4 rounded-xl shadow-lg">
+                    <div id="hours" class="text-4xl md:text-5xl font-extrabold text-pink-700">00</div>
+                    <div class="text-sm text-pink-800 mt-1">Hours</div>
+                </div>
+                <div class="bg-pink-100 p-4 rounded-xl shadow-lg">
+                    <div id="minutes" class="text-4xl md:text-5xl font-extrabold text-pink-700">00</div>
+                    <div class="text-sm text-pink-800 mt-1">Minutes</div>
+                </div>
+                <div class="bg-pink-100 p-4 rounded-xl shadow-lg">
+                    <div id="seconds" class="text-4xl md:text-5xl font-extrabold text-pink-700">00</div>
+                    <div class="text-sm text-pink-800 mt-1">Seconds</div>
+                </div>
+            </div>
+            <p class="mt-8 text-md text-gray-700 font-semibold">
+                The world pauses for you on this day. <span class="text-pink-600">See you soon!</span>
+            </p>
+        </div>
+
+        <div id="birthdayView" class="card p-6 md:p-10 text-center animate-fade-in relative">
+            
+            <div id="animation-container" class="absolute inset-0 w-full h-full overflow-hidden rounded-3xl -z-10">
+                <div class="heart" style="left: 10%; animation-delay: 0s; transform: scale(0.7);"></div>
+                <div class="heart" style="left: 20%; animation-delay: -5s; transform: scale(1.1);"></div>
+                <div class="heart" style="left: 30%; animation-delay: -2s; transform: scale(0.9);"></div>
+                <div class="heart" style="left: 40%; animation-delay: -10s; transform: scale(1.3);"></div>
+                <div class="heart" style="left: 50%; animation-delay: -3s; transform: scale(0.8);"></div>
+                <div class="heart" style="left: 60%; animation-delay: -7s; transform: scale(1.0);"></div>
+                <div class="heart" style="left: 70%; animation-delay: -1s; transform: scale(0.6);"></div>
+                <div class="heart" style="left: 80%; animation-delay: -6s; transform: scale(1.2);"></div>
+                <div class="heart" style="left: 90%; animation-delay: -4s; transform: scale(0.75);"></div>
+            </div>
+
+            <div class="card-content">
+                <h1 class="text-6xl md:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-red-600 mb-2 leading-tight">
+                    It's Today!
+                </h1>
+                <h2 class="text-5xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-rose-500 mb-4">
+                    Happy Birthday, Emily!
+                </h2>
+                
+                <p class="text-3xl text-pink-700 font-serif mb-6" title="Rikreay Thngai Kamnaet">
+                    រីករាយថ្ងៃកំណើត
+                </p>
+
+                <div class="text-left text-gray-700 text-lg space-y-4 my-8 p-4 bg-yellow-100 rounded-xl shadow-inner border-l-4 border-yellow-500">
+                    <p class="font-bold text-red-600 text-center uppercase tracking-wider">--- THIS IS WHERE YOU WRITE YOUR PERSONAL MESSAGE ---</p>
+                    <p>Emily,</p>
+                    <p>
+                        This day is more than just a date; it's a celebration of the incredible light you bring into the world. Knowing you has genuinely changed my perspective on friendship, kindness, and connection. You're the kind of person who makes the ordinary feel extraordinary.
+                    </p>
+                    <p>
+                        I hope your heart is as full of joy today as mine is every time I think of you. May this next year bring you all the beautiful things you've always worked for.
+                    </p>
+                    <p>
+                        Happy, happy birthday. I'm so grateful to have you in my life.
+                    </p>
+                </div>
+
+                <div class="space-y-6 mt-10">
+                    <blockquote class="font-serif text-gray-600 italic border-l-4 border-gray-300 pl-4">
+                        "The best and most beautiful things in the world cannot be seen or even touched - they must be felt with the heart."
+                        <cite class="not-italic block text-right text-gray-500 text-sm mt-1">- Helen Keller</cite>
+                    </blockquote>
+                    
+                    <blockquote class="font-serif text-gray-600 italic border-l-4 border-gray-300 pl-4">
+                        "A friend is what the heart needs all the time."
+                        <cite class="not-italic block text-right text-gray-500 text-sm mt-1">- Henry Van Dyke</cite>
+                    </blockquote>
+                </div>
+
+                <p class="mt-8 text-md font-medium text-gray-500">
+                    Made with all the feeling in the world, just for you.
+                </p>
+            </div>
+        </div>
+
     </div>
 
-    <aside class="side">
-      <div class="card-title">
-        <div class="badge">💖</div>
-        <div>
-          <div style="font-weight:700">Notes & Wishes</div>
-          <div style="font-size:13px;color:rgba(255,242,255,0.66)">Friendly, warm, and sincere messages</div>
-        </div>
-      </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- CONFIGURATION ---
+            // FOR PREVIEW MODE, we set the date in the past (November 3rd) to trigger the birthday view.
+            // Change to 'new Date(2025, 10, 7).getTime()' when you are ready to launch the real countdown.
+            const birthday = new Date(2025, 10, 3).getTime(); 
 
-      <div class="wish-list">
-        <div class="wish">
-          <div style="font-weight:700">A warm friend note</div>
-          <div style="margin-top:8px">Emily — your laughter makes ordinary days better. Wishing you calm mornings and bright evenings.</div>
-        </div>
+            // --- Get Elements ---
+            const countdownView = document.getElementById('countdownView');
+            const birthdayView = document.getElementById('birthdayView');
+            
+            const daysEl = document.getElementById('days');
+            const hoursEl = document.getElementById('hours');
+            const minutesEl = document.getElementById('minutes');
+            const secondsEl = document.getElementById('seconds');
 
-        <div class="wish">
-          <div style="font-weight:700">Short & honest</div>
-          <div style="margin-top:8px">You’re kind, you're real, and you deserve all the little joys today brings.</div>
-        </div>
+            // Initialize sound synth globally
+            let synth;
+            try {
+                // Initialize a simple chime sound using a MembraneSynth
+                synth = new Tone.MembraneSynth({
+                    pitchDecay: 0.05,
+                    octaves: 8,
+                    envelope: {
+                        attack: 0.001,
+                        decay: 0.4,
+                        sustain: 0.01,
+                        release: 1.4,
+                        level: 1
+                    }
+                }).toDestination();
+            } catch (e) {
+                console.warn("Tone.js failed to initialize. Audio will be disabled.", e);
+            }
 
-        <div class="wish quote">"We do not remember days, we remember moments." — Cesare Pavese</div>
+            // Helper to add a leading zero
+            function formatTime(time) {
+                return time < 10 ? `0${time}` : time;
+            }
 
-        <div class="wish">
-          <div style="font-weight:700">Final friendly wish</div>
-          <div style="margin-top:8px">May this year bring new smiles, new friends, and small daily wins that feel like home.</div>
-        </div>
+            // --- Main Logic Function ---
+            function runClock() {
+                const now = new Date().getTime();
+                const distance = birthday - now;
 
-        <div style="display:flex;gap:8px;justify-content:center;margin-top:8px">
-          <button id="downloadBtn" class="btn alt">Download page</button>
-          <button id="openBtn" class="btn alt">Open in new tab</button>
-        </div>
-      </div>
-    </aside>
+                if (distance <= 0) {
+                    // --- 1. IT'S THE BIRTHDAY! (Display Birthday View) ---
+                    clearInterval(interval);
+                    countdownView.style.display = 'none';
+                    birthdayView.style.display = 'block';
+                    
+                    // Trigger the special sound effect once
+                    if (synth && !document.body.dataset.played) {
+                        document.body.dataset.played = 'true';
+                        try {
+                            Tone.start(); 
+                            synth.triggerAttackRelease("G4", "2n"); 
+                        } catch (e) {
+                            console.error("Audio playback failed.", e);
+                        }
+                    }
 
-    <!-- celebration overlay -->
-    <div class="celebrate" id="celebrateOverlay" aria-hidden="true">
-      <div class="glow-title">Happy Birthday, Emily 🎉</div>
-      <div class="cake" role="img" aria-label="Birthday cake">
-        <div class="candles">
-          <div class="candle"></div><div class="candle"></div><div class="candle"></div>
-        </div>
-        <div style="font-weight:700;color:#5b2745">Make a wish ✨</div>
-      </div>
+                } else {
+                    // --- 2. IT'S STILL COUNTDOWN TIME (Display Countdown View) ---
+                    countdownView.style.display = 'block';
+                    birthdayView.style.display = 'none';
+                    
+                    // Calculate time left
+                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-      <div class="messages" id="messagesContainer"></div>
+                    // Update the timer on the page
+                    daysEl.innerHTML = formatTime(days);
+                    hoursEl.innerHTML = formatTime(hours);
+                    minutesEl.innerHTML = formatTime(minutes);
+                    secondsEl.innerHTML = formatTime(seconds);
+                }
+            }
 
-      <div style="display:flex; gap:10px; margin-top:8px;">
-        <button id="replayBtn" class="btn alt">Replay Celebration</button>
-        <button id="closeBtn" class="btn alt">Close</button>
-      </div>
-    </div>
-
-    <div class="particles" id="particles"></div>
-  </div>
-
-  <footer>Made with care — Friendly & warm wishes for Emily 💌</footer>
-
-<script>
-/* ========== User-replaceable audio link ==========
-   Replace SAMPLE_AUDIO_URL with your CDN audio (MP3) if you want a recorded song.
-*/
-const SAMPLE_AUDIO_URL = 'https://cdn.davex.site/cdn/audio/emily-happy-birthday.mp3'; // <-- replace when ready
-/* =================================================*/
-
-/* ---------- Timezone-safe target (Asia/Phnom_Penh, UTC+7) ---------- */
-// target day (Nov 7) 00:00 in Cambodia (UTC+7)
-const TARGET_MONTH = 10; // November (0-indexed)
-const TARGET_DAY = 7;
-const KH_OFFSET = 7; // hours ahead of UTC
-
-function getTargetUTCForYear(year){
-  // We want the UTC ms that corresponds to (year, Nov 7, 00:00) in UTC+7.
-  // Creating Date.UTC(year, month, day, -KH_OFFSET) shifts correctly to UTC moment.
-  return Date.UTC(year, TARGET_MONTH, TARGET_DAY, -KH_OFFSET, 0, 0, 0);
-}
-
-// Build current KH-local date parts to decide which year we target
-function nowInKH(){
-  const parts = new Intl.DateTimeFormat('en-GB', {
-    timeZone: 'Asia/Phnom_Penh',
-    year:'numeric', month:'numeric', day:'numeric', hour:'numeric', minute:'numeric', second:'numeric'
-  }).formatToParts(new Date());
-  const p = {};
-  parts.forEach(x=>p[x.type]=x.value);
-  return new Date(p.year, Number(p.month)-1, p.day, p.hour, p.minute, p.second);
-}
-
-let khNow = nowInKH();
-let targetYear = khNow.getFullYear();
-let targetUTC = getTargetUTCForYear(targetYear);
-if (khNow.getFullYear()>=(new Date(targetUTC).getUTCFullYear()) && (nowInKH().getMonth() > new Date(targetUTC).getUTCMonth() || nowInKH().getDate() >= new Date(targetUTC).getUTCDate())) {
-  // if today in KH is on/after Nov 7, use next year
-  targetYear = targetYear + 1;
-  targetUTC = getTargetUTCForYear(targetYear);
-}
-const targetDate = new Date(targetUTC);
-
-/* ---------- Elements ---------- */
-const elDays = document.getElementById('days');
-const elHours = document.getElementById('hours');
-const elMinutes = document.getElementById('minutes');
-const elSeconds = document.getElementById('seconds');
-const subLabel = document.getElementById('subLabel');
-const celebrateOverlay = document.getElementById('celebrateOverlay');
-const messagesContainer = document.getElementById('messagesContainer');
-const particlesRoot = document.getElementById('particles');
-
-subLabel.textContent = `Counting down to ${new Intl.DateTimeFormat(undefined,{ timeZone:'Asia/Phnom_Penh', weekday:'long', year:'numeric', month:'long', day:'numeric'}).format(targetDate)} (Cambodia time)`;
-
-/* ---------- Countdown logic (UTC-safe) ---------- */
-let countdownInterval;
-function updateCountdown(){
-  const nowUTC = Date.now(); // ms UTC
-  const diff = targetDate.getTime() - nowUTC;
-  if (diff <= 0){
-    // trigger celebration once and stop
-    clearInterval(countdownInterval);
-    openCelebration();
-    return;
-  }
-  const s = Math.floor(diff/1000);
-  const days = Math.floor(s/86400);
-  const hours = Math.floor((s%86400)/3600);
-  const minutes = Math.floor((s%3600)/60);
-  const seconds = s%60;
-  elDays.textContent = String(days);
-  elHours.textContent = String(hours).padStart(2,'0');
-  elMinutes.textContent = String(minutes).padStart(2,'0');
-  elSeconds.textContent = String(seconds).padStart(2,'0');
-}
-updateCountdown();
-countdownInterval = setInterval(updateCountdown, 1000);
-
-/* ---------- Particles generator (hearts/stars) ---------- */
-function spawnParticle(){
-  const el = document.createElement('div');
-  el.className = 'particle';
-  const isHeart = Math.random() > 0.6;
-  el.textContent = isHeart ? '❤' : (Math.random()>0.5 ? '✦' : '✶');
-  el.style.left = (5 + Math.random()*90) + '%';
-  el.style.top = (85 + Math.random()*10) + '%';
-  el.style.fontSize = (10 + Math.random()*26) + 'px';
-  el.style.animationDuration = (8 + Math.random()*12) + 's';
-  particlesRoot.appendChild(el);
-  setTimeout(()=>{ el.remove(); }, 14000);
-}
-setInterval(spawnParticle, 350);
-
-/* ---------- Celebration visuals & messages (friendly tone) ---------- */
-const friendlyMessages = [
-  "Hey Emily — happy birthday!",
-  "I hope today gives you calm mornings, easy laughter, and small moments that feel like a cozy surprise.",
-  "You’re a truly kind friend. You make ordinary days better just by being you.",
-  "Wishing you a year full of gentle wins, good music, and warm company.",
-  "Enjoy every little thing today — you deserve it. 🎈",
-  "From someone who’s really glad to know you — happy birthday, Emily."
-];
-
-function openCelebration(){
-  // show overlay
-  celebrateOverlay.classList.add('show');
-  celebrateOverlay.setAttribute('aria-hidden','false');
-
-  // populate messages line-by-line
-  messagesContainer.innerHTML = '';
-  let i = 0;
-  function nextLine(){
-    if (i >= friendlyMessages.length) return;
-    const p = document.createElement('div');
-    p.style.margin = '8px 0';
-    p.style.fontSize = '15px';
-    p.textContent = friendlyMessages[i];
-    messagesContainer.appendChild(p);
-    i++;
-    setTimeout(nextLine, 1800);
-  }
-  nextLine();
-
-  // start lightweight confetti (canvas)
-  startConfetti();
-
-  // try to autoplay audio; may be blocked on some browsers — user can press Play
-  tryPlayAudio();
-}
-
-/* ---------- Confetti (lightweight canvas ribbons) ---------- */
-let confettiRAF;
-function startConfetti(){
-  const canvas = document.createElement('canvas');
-  canvas.style.position='absolute'; canvas.style.inset='0'; canvas.style.pointerEvents='none'; canvas.style.zIndex=42;
-  document.body.appendChild(canvas);
-  const ctx = canvas.getContext('2d');
-  function resize(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-  resize(); window.addEventListener('resize', resize);
-  const pieces = [];
-  const colors = ['#ff6fb5','#ffd27f','#9b7cff','#66e0ff','#fff4cc'];
-  for(let i=0;i<140;i++){
-    pieces.push({ x: Math.random()*canvas.width, y: Math.random()*-canvas.height, r:6+Math.random()*10, vx:(Math.random()-0.5)*1.2, vy:2+Math.random()*3, color: colors[Math.floor(Math.random()*colors.length)], rot: Math.random()*360});
-  }
-  function draw(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    for(const p of pieces){
-      p.x += p.vx; p.y += p.vy; p.rot += 4;
-      ctx.save();
-      ctx.translate(p.x,p.y);
-      ctx.rotate(p.rot * Math.PI/180);
-      ctx.fillStyle = p.color;
-      ctx.fillRect(-p.r/2, -p.r/2, p.r, p.r*0.6);
-      ctx.restore();
-      if (p.y > canvas.height + 40){ p.y = -40; p.x = Math.random()*canvas.width; }
-    }
-    confettiRAF = requestAnimationFrame(draw);
-  }
-  draw();
-  // stop after a while
-  setTimeout(()=>{ cancelAnimationFrame(confettiRAF); canvas.remove(); }, 18000);
-}
-
-/* ---------- Audio handling (use your CDN) ---------- */
-let audioEl;
-function ensureAudio(){
-  if (!audioEl){
-    audioEl = document.createElement('audio');
-    audioEl.src = SAMPLE_AUDIO_URL;
-    audioEl.preload = 'auto';
-    audioEl.style.display = 'none';
-    document.body.appendChild(audioEl);
-  }
-}
-async function tryPlayAudio(){
-  ensureAudio();
-  try { await audioEl.play(); } catch(e){ /* autoplay blocked — user interaction required */ }
-}
-
-/* ---------- TTS sing (friendly short) ---------- */
-function singTTS(){
-  if (!('speechSynthesis' in window)) { alert('Speech synthesis not supported'); return; }
-  const s = window.speechSynthesis; s.cancel();
-  const lines = [
-    'Happy birthday to you',
-    'Happy birthday to you',
-    'Happy birthday dear Emily',
-    'Happy birthday to you'
-  ];
-  let i = 0;
-  function speakNext(){
-    if (i>=lines.length) return;
-    const u = new SpeechSynthesisUtterance(lines[i]);
-    u.pitch = 1.08; u.rate = 0.95;
-    const voices = s.getVoices();
-    if (voices && voices.length) u.voice = voices.find(v=>/female|girl|samantha|amelia/i.test(v.name)) || voices[0];
-    u.onend = ()=>{ i++; setTimeout(speakNext, 240); };
-    s.speak(u);
-    // also attempt to play audio file if available
-    tryPlayAudio();
-  }
-  speakNext();
-}
-
-/* ---------- Buttons ---------- */
-document.getElementById('playBtn').addEventListener('click', ()=>{ ensureAudio(); audioEl.currentTime = 0; audioEl.play().catch(()=>{}); });
-document.getElementById('singBtn').addEventListener('click', ()=>{ singTTS(); });
-document.getElementById('forceBtn').addEventListener('click', ()=>{ clearInterval(countdownInterval); openCelebration(); });
-
-document.getElementById('replayBtn').addEventListener('click', ()=>{ // replay visuals & audio
-  messagesContainer.innerHTML = ''; openCelebration();
-});
-document.getElementById('closeBtn').addEventListener('click', ()=>{ celebrateOverlay.classList.remove('show'); celebrateOverlay.setAttribute('aria-hidden','true'); });
-
-/* ---------- Download & open handlers ---------- */
-document.getElementById('downloadBtn').addEventListener('click', ()=>{
-  const html = '<!doctype html>\\n' + document.documentElement.outerHTML;
-  const blob = new Blob([html], {type:'text/html'}); const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href = url; a.download = 'emily-birthday.html'; a.click();
-  URL.revokeObjectURL(url);
-});
-document.getElementById('openBtn').addEventListener('click', ()=> window.open(location.href, '_blank'));
-
-/* ---------- Quick safety: if visitor already in KH target date, auto-trigger ---------- */
-(function autoIfKHTarget(){
-  const kh = nowInKH();
-  const targetKH = new Date(targetUTC);
-  // Compare KH date parts
-  if (kh.getFullYear() === targetKH.getUTCFullYear() && kh.getMonth() === targetKH.getUTCMonth() && kh.getDate() === targetKH.getUTCDate()){
-    setTimeout(()=>{ clearInterval(countdownInterval); openCelebration(); }, 700);
-  }
-})();
-</script>
+            // Run the clock immediately and then every second
+            runClock();
+            const interval = setInterval(runClock, 1000);
+        });
+    </script>
 </body>
 </html>
