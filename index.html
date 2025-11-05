@@ -1,281 +1,114 @@
+<!-- File: emily-birthday.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A Special Day for Emily</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        serif: ['Lora', 'serif'],
-                    },
-                    animation: {
-                        'fade-in': 'fadeIn 2s ease-in-out',
-                        'float': 'float 15s linear infinite',
-                        'pulse-glow': 'pulseGlow 2s infinite alternate',
-                    },
-                    keyframes: {
-                        fadeIn: {
-                            '0%': { opacity: 0, transform: 'translateY(20px)' },
-                            '100%': { opacity: 1, transform: 'translateY(0)' },
-                        },
-                        float: {
-                            '0%': { transform: 'translateY(100vh) scale(0.5)', opacity: 0 },
-                            '10%': { opacity: 1 },
-                            '90%': { opacity: 1 },
-                            '100%': { transform: 'translateY(-100vh) scale(1.5)', opacity: 0 },
-                        },
-                        pulseGlow: { 
-                            '0%': { boxShadow: '0 0 10px rgba(255, 105, 180, 0.4)' },
-                            '100%': { boxShadow: '0 0 20px rgba(255, 105, 180, 0.8)' },
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            /* Richer, more romantic gradient */
-            background: linear-gradient(135deg, #fce3e7 0%, #ffc0cb 40%, #a29bfe 100%);
-            overflow-x: hidden; 
-        }
-        
-        /* Card styling */
-        .card {
-            background: rgba(255, 255, 255, 0.95); /* More opaque, cleaner look */
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border-radius: 2rem; /* Even rounder */
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15); /* Stronger shadow */
-            transition: transform 0.3s ease;
-        }
-
-        .card:hover {
-            transform: scale(1.02); /* Little bounce on desktop/touch */
-        }
-
-        /* The heart-shaped animation particles */
-        .heart {
-            position: absolute;
-            font-size: 2rem;
-            animation: float 15s linear infinite;
-            z-index: 0;
-            width: 20px;
-            height: 20px;
-            background: rgba(255, 105, 180, 0.7);
-            transform: rotate(-45deg);
-        }
-        
-        .heart::before,
-        .heart::after {
-            content: '';
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: rgba(255, 105, 180, 0.7);
-            border-radius: 50%;
-        }
-        
-        .heart::before { top: -10px; left: 0; }
-        .heart::after { top: 0; left: 10px; }
-        
-        /* Apply pulse glow only to the birthday view card */
-        #birthdayView .card-content {
-            animation: pulse-glow 2s infinite alternate;
-        }
-        
-        /* Set both to 'none' here. JS will force the correct one open. */
-        #countdownView, #birthdayView { display: none; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Birthday Emily 🎉</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    body {
+      background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+      overflow: hidden;
+      font-family: 'Poppins', sans-serif;
+    }
+    .fade-in {
+      animation: fadeIn 2s ease-in forwards;
+    }
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+    .heart {
+      position: absolute;
+      color: #ff7eb9;
+      animation: float 6s ease-in infinite;
+      opacity: 0.8;
+    }
+    @keyframes float {
+      0% { transform: translateY(100vh) scale(0.6); opacity: 1; }
+      100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+    }
+  </style>
 </head>
-<body class="min-h-screen w-full flex items-center justify-center p-4 relative overflow-hidden">
+<body class="flex flex-col items-center justify-center min-h-screen text-center text-white p-4">
+  <audio id="music" src="https://cdn.pixabay.com/download/audio/2023/01/18/audio_64d303d57e.mp3?filename=happy-birthday-142422.mp3" loop></audio>
 
-    <div class="w-full max-w-md mx-auto z-10">
+  <div id="countdown" class="text-3xl md:text-5xl font-bold"></div>
 
-        <div id="countdownView" class="card p-6 md:p-10 text-center animate-fade-in">
-            <h1 class="text-3xl font-bold text-gray-800">For Emily, A Very Special Friend</h1>
-            <h2 class="text-5xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600 my-4">
-                07 | November
-            </h2>
-            <p class="text-lg text-gray-600 mb-8 font-serif italic">Counting every second until your day arrives...</p>
+  <div id="birthday" class="hidden fade-in">
+    <h1 class="text-5xl md:text-7xl font-extrabold text-pink-100 mb-4">Happy Birthday, Emily! 💖</h1>
+    <p class="text-xl text-pink-50 italic mb-2">🎂 David wishes you a very special birthday — and so you know, he does care. 💌</p>
+    <p class="text-lg text-white mb-4">ពីថ្ងៃដែលយើងបានជួបគ្នា ខ្ញុំដឹងថាអ្នកពិតជាមានតម្លៃពិសេស។</p>
+    <p class="max-w-xl mx-auto text-lg text-pink-50 mb-6">
+      From the day we met, I knew you were someone special. Your friendship has brought so much light and laughter into my life, and I’m so grateful for every moment.<br><br>
+      Watching you chase your dreams is inspiring, and I’m so proud of the person you are. You deserve all the happiness, joy, and success in the world today and always.<br><br>
+      Sending you all my best wishes on your special day. I hope it’s as amazing as you are.
+    </p>
+    <p class="italic text-pink-100 mt-4">“The best and most beautiful things in the world cannot be seen or even touched — they must be felt with the heart.”<br>— David Promise</p>
+  </div>
 
-            <div class="grid grid-cols-4 gap-2 md:gap-4">
-                <div class="bg-pink-100 p-4 rounded-xl shadow-lg">
-                    <div id="days" class="text-4xl md:text-5xl font-extrabold text-pink-700">00</div>
-                    <div class="text-sm text-pink-800 mt-1">Days</div>
-                </div>
-                <div class="bg-pink-100 p-4 rounded-xl shadow-lg">
-                    <div id="hours" class="text-4xl md:text-5xl font-extrabold text-pink-700">00</div>
-                    <div class="text-sm text-pink-800 mt-1">Hours</div>
-                </div>
-                <div class="bg-pink-100 p-4 rounded-xl shadow-lg">
-                    <div id="minutes" class="text-4xl md:text-5xl font-extrabold text-pink-700">00</div>
-                    <div class="text-sm text-pink-800 mt-1">Minutes</div>
-                </div>
-                <div class="bg-pink-100 p-4 rounded-xl shadow-lg">
-                    <div id="seconds" class="text-4xl md:text-5xl font-extrabold text-pink-700">00</div>
-                    <div class="text-sm text-pink-800 mt-1">Seconds</div>
-                </div>
-            </div>
-            <p class="mt-8 text-md text-gray-700 font-semibold">
-                The world pauses for you on this day. <span class="text-pink-600">See you soon!</span>
-            </p>
-        </div>
+  <button id="musicBtn" class="hidden fixed bottom-4 right-4 bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-full shadow-lg">🔈 Play Music</button>
 
-        <div id="birthdayView" class="card p-6 md:p-10 text-center animate-fade-in relative">
-            
-            <div id="animation-container" class="absolute inset-0 w-full h-full overflow-hidden rounded-3xl -z-10">
-                <div class="heart" style="left: 10%; animation-delay: 0s; transform: scale(0.7);"></div>
-                <div class="heart" style="left: 20%; animation-delay: -5s; transform: scale(1.1);"></div>
-                <div class="heart" style="left: 30%; animation-delay: -2s; transform: scale(0.9);"></div>
-                <div class="heart" style="left: 40%; animation-delay: -10s; transform: scale(1.3);"></div>
-                <div class="heart" style="left: 50%; animation-delay: -3s; transform: scale(0.8);"></div>
-                <div class="heart" style="left: 60%; animation-delay: -7s; transform: scale(1.0);"></div>
-                <div class="heart" style="left: 70%; animation-delay: -1s; transform: scale(0.6);"></div>
-                <div class="heart" style="left: 80%; animation-delay: -6s; transform: scale(1.2);"></div>
-                <div class="heart" style="left: 90%; animation-delay: -4s; transform: scale(0.75);"></div>
-            </div>
+  <script>
+    const countdownEl = document.getElementById('countdown');
+    const birthdayEl = document.getElementById('birthday');
+    const music = document.getElementById('music');
+    const musicBtn = document.getElementById('musicBtn');
 
-            <div class="card-content">
-                <h1 class="text-6xl md:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-red-600 mb-2 leading-tight">
-                    It's Today!
-                </h1>
-                <h2 class="text-5xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-rose-500 mb-4">
-                    Happy Birthday, Emily!
-                </h2>
-                
-                <p class="text-3xl text-pink-700 font-serif mb-6" title="Rikreay Thngai Kamnaet">
-                    រីករាយថ្ងៃកំណើត
-                </p>
+    const birthdayDate = new Date('2025-11-07T00:00:00');
 
-                <div class="text-left text-gray-700 text-lg space-y-4 my-8 p-4 bg-yellow-100 rounded-xl shadow-inner border-l-4 border-yellow-500">
-                    <p class="font-bold text-red-600 text-center uppercase tracking-wider">--- THIS IS WHERE YOU WRITE YOUR PERSONAL MESSAGE ---</p>
-                    <p>Emily,</p>
-                    <p>
-                        This day is more than just a date; it's a celebration of the incredible light you bring into the world. Knowing you has genuinely changed my perspective on friendship, kindness, and connection. You're the kind of person who makes the ordinary feel extraordinary.
-                    </p>
-                    <p>
-                        I hope your heart is as full of joy today as mine is every time I think of you. May this next year bring you all the beautiful things you've always worked for.
-                    </p>
-                    <p>
-                        Happy, happy birthday. I'm so grateful to have you in my life.
-                    </p>
-                </div>
+    function updateCountdown() {
+      const now = new Date();
+      const diff = birthdayDate - now;
 
-                <div class="space-y-6 mt-10">
-                    <blockquote class="font-serif text-gray-600 italic border-l-4 border-gray-300 pl-4">
-                        "The best and most beautiful things in the world cannot be seen or even touched - they must be felt with the heart."
-                        <cite class="not-italic block text-right text-gray-500 text-sm mt-1">- Helen Keller</cite>
-                    </blockquote>
-                    
-                    <blockquote class="font-serif text-gray-600 italic border-l-4 border-gray-300 pl-4">
-                        "A friend is what the heart needs all the time."
-                        <cite class="not-italic block text-right text-gray-500 text-sm mt-1">- Henry Van Dyke</cite>
-                    </blockquote>
-                </div>
+      if (diff <= 0) {
+        countdownEl.style.display = 'none';
+        birthdayEl.classList.remove('hidden');
+        musicBtn.classList.remove('hidden');
+        startCelebration();
+        return;
+      }
 
-                <p class="mt-8 text-md font-medium text-gray-500">
-                    Made with all the feeling in the world, just for you.
-                </p>
-            </div>
-        </div>
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const mins = Math.floor((diff / (1000 * 60)) % 60);
+      const secs = Math.floor((diff / 1000) % 60);
 
-    </div>
+      countdownEl.innerHTML = `🎉 ${days}d ${hours}h ${mins}m ${secs}s until Emily’s Birthday 💖`;
+    }
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // --- CONFIGURATION ---
-            // FOR PREVIEW MODE, we set the date in the past (November 3rd) to trigger the birthday view.
-            // Change to 'new Date(2025, 10, 7).getTime()' when you are ready to launch the real countdown.
-            const birthday = new Date(2025, 10, 3).getTime(); 
+    function startCelebration() {
+      music.play().catch(() => musicBtn.classList.remove('hidden'));
+      launchHearts();
+      setInterval(() => confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 } }), 2000);
+    }
 
-            // --- Get Elements ---
-            const countdownView = document.getElementById('countdownView');
-            const birthdayView = document.getElementById('birthdayView');
-            
-            const daysEl = document.getElementById('days');
-            const hoursEl = document.getElementById('hours');
-            const minutesEl = document.getElementById('minutes');
-            const secondsEl = document.getElementById('seconds');
+    musicBtn.addEventListener('click', () => {
+      if (music.paused) {
+        music.play();
+        musicBtn.textContent = "🔇 Mute Music";
+      } else {
+        music.pause();
+        musicBtn.textContent = "🔈 Play Music";
+      }
+    });
 
-            // Initialize sound synth globally
-            let synth;
-            try {
-                // Initialize a simple chime sound using a MembraneSynth
-                synth = new Tone.MembraneSynth({
-                    pitchDecay: 0.05,
-                    octaves: 8,
-                    envelope: {
-                        attack: 0.001,
-                        decay: 0.4,
-                        sustain: 0.01,
-                        release: 1.4,
-                        level: 1
-                    }
-                }).toDestination();
-            } catch (e) {
-                console.warn("Tone.js failed to initialize. Audio will be disabled.", e);
-            }
+    function launchHearts() {
+      setInterval(() => {
+        const heart = document.createElement('div');
+        heart.innerHTML = '💖';
+        heart.classList.add('heart');
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.animationDuration = (4 + Math.random() * 3) + 's';
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 7000);
+      }, 500);
+    }
 
-            // Helper to add a leading zero
-            function formatTime(time) {
-                return time < 10 ? `0${time}` : time;
-            }
-
-            // --- Main Logic Function ---
-            function runClock() {
-                const now = new Date().getTime();
-                const distance = birthday - now;
-
-                if (distance <= 0) {
-                    // --- 1. IT'S THE BIRTHDAY! (Display Birthday View) ---
-                    clearInterval(interval);
-                    countdownView.style.display = 'none';
-                    birthdayView.style.display = 'block';
-                    
-                    // Trigger the special sound effect once
-                    if (synth && !document.body.dataset.played) {
-                        document.body.dataset.played = 'true';
-                        try {
-                            Tone.start(); 
-                            synth.triggerAttackRelease("G4", "2n"); 
-                        } catch (e) {
-                            console.error("Audio playback failed.", e);
-                        }
-                    }
-
-                } else {
-                    // --- 2. IT'S STILL COUNTDOWN TIME (Display Countdown View) ---
-                    countdownView.style.display = 'block';
-                    birthdayView.style.display = 'none';
-                    
-                    // Calculate time left
-                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-                    // Update the timer on the page
-                    daysEl.innerHTML = formatTime(days);
-                    hoursEl.innerHTML = formatTime(hours);
-                    minutesEl.innerHTML = formatTime(minutes);
-                    secondsEl.innerHTML = formatTime(seconds);
-                }
-            }
-
-            // Run the clock immediately and then every second
-            runClock();
-            const interval = setInterval(runClock, 1000);
-        });
-    </script>
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+  </script>
 </body>
 </html>
