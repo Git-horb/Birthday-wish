@@ -1,114 +1,291 @@
-<!-- File: emily-birthday.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Happy Birthday Emily 🎉</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <style>
-    body {
-      background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
-      overflow: hidden;
-      font-family: 'Poppins', sans-serif;
-    }
-    .fade-in {
-      animation: fadeIn 2s ease-in forwards;
-    }
-    @keyframes fadeIn {
-      from {opacity: 0;}
-      to {opacity: 1;}
-    }
-    .heart {
-      position: absolute;
-      color: #ff7eb9;
-      animation: float 6s ease-in infinite;
-      opacity: 0.8;
-    }
-    @keyframes float {
-      0% { transform: translateY(100vh) scale(0.6); opacity: 1; }
-      100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Message for Emily</title>
+    
+    <style>
+        /* General Styling */
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            text-align: center;
+            background: linear-gradient(135deg, #fde3e9, #ffdde1);
+            color: #5d4955;
+            margin: 0;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .content-box {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            max-width: 600px;
+            margin: 40px auto;
+        }
+
+        h1 {
+            color: #d93f87; /* A strong pink */
+            font-size: 2.5rem;
+        }
+
+        h2.khmer-text {
+            font-size: 1.8rem;
+            color: #e85a9b;
+            font-weight: normal;
+        }
+
+        /* Countdown Screen Styling */
+        #countdown-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+        }
+
+        #timer {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        #timer .box {
+            background: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            min-width: 60px;
+        }
+
+        #timer .box span {
+            display: block;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #d93f87;
+        }
+
+        /* Birthday Screen Styling */
+        #birthday-screen {
+            display: none; /* This is hidden by default */
+            animation: fadeIn 2s ease-in-out; /* Fade-in animation */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .david-message {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #d93f87;
+            margin: 20px 0;
+            padding: 15px;
+            background: #fff;
+            border-radius: 10px;
+            border-left: 5px solid #e85a9b;
+        }
+
+        .birthday-card-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin: 20px 0;
+        }
+
+        .message-from-image, .more-talks {
+            max-width: 600px;
+            margin: 20px auto;
+            text-align: left;
+            line-height: 1.7;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .message-from-image .love {
+            text-align: right;
+            font-weight: bold;
+            font-style: italic;
+            color: #e85a9b;
+        }
+
+        hr {
+            border: 0;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(217, 63, 135, 0.75), rgba(0, 0, 0, 0));
+            margin: 40px 0;
+        }
+
+        blockquote {
+            font-style: italic;
+            color: #777;
+            border-left: 4px solid #fde3e9;
+            padding-left: 15px;
+            margin: 20px 0;
+        }
+
+        /* Floating Hearts Animation */
+        .hearts-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 10;
+        }
+
+        .heart {
+            position: absolute;
+            bottom: -50px;
+            font-size: 1.5rem;
+            animation: float 15s linear infinite;
+            opacity: 0.7;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0); opacity: 0.7; }
+            100% { transform: translateY(-100vh); opacity: 0; }
+        }
+    </style>
 </head>
-<body class="flex flex-col items-center justify-center min-h-screen text-center text-white p-4">
-  <audio id="music" src="https://cdn.pixabay.com/download/audio/2023/01/18/audio_64d303d57e.mp3?filename=happy-birthday-142422.mp3" loop></audio>
+<body>
 
-  <div id="countdown" class="text-3xl md:text-5xl font-bold"></div>
+    <div class="hearts-container"></div>
 
-  <div id="birthday" class="hidden fade-in">
-    <h1 class="text-5xl md:text-7xl font-extrabold text-pink-100 mb-4">Happy Birthday, Emily! 💖</h1>
-    <p class="text-xl text-pink-50 italic mb-2">🎂 David wishes you a very special birthday — and so you know, he does care. 💌</p>
-    <p class="text-lg text-white mb-4">ពីថ្ងៃដែលយើងបានជួបគ្នា ខ្ញុំដឹងថាអ្នកពិតជាមានតម្លៃពិសេស។</p>
-    <p class="max-w-xl mx-auto text-lg text-pink-50 mb-6">
-      From the day we met, I knew you were someone special. Your friendship has brought so much light and laughter into my life, and I’m so grateful for every moment.<br><br>
-      Watching you chase your dreams is inspiring, and I’m so proud of the person you are. You deserve all the happiness, joy, and success in the world today and always.<br><br>
-      Sending you all my best wishes on your special day. I hope it’s as amazing as you are.
-    </p>
-    <p class="italic text-pink-100 mt-4">“The best and most beautiful things in the world cannot be seen or even touched — they must be felt with the heart.”<br>— David Promise</p>
-  </div>
+    <div id="countdown-screen">
+        <div class="content-box">
+            <h1>Something special is happening...</h1>
+            <p>For a very special person.</p>
+            <div id="timer">
+                <div class="box"><span id="days">00</span>Days</div>
+                <div class="box"><span id="hours">00</span>Hours</div>
+                <div class="box"><span id="minutes">00</span>Minutes</div>
+                <div class="box"><span id="seconds">00</span>Seconds</div>
+            </div>
+        </div>
+    </div>
 
-  <button id="musicBtn" class="hidden fixed bottom-4 right-4 bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-full shadow-lg">🔈 Play Music</button>
+    <div id="birthday-screen">
+        
+        <h1>Happy Birthday, Emily!</h1>
+        <h2 class="khmer-text">រីករាយ​ថ្ងៃ​កំណើត</h2>
+        
+        <div class="david-message">
+            <p>David wishes you a very special birthday, and so you know, he does care!</p>
+        </div>
 
-  <script>
-    const countdownEl = document.getElementById('countdown');
-    const birthdayEl = document.getElementById('birthday');
-    const music = document.getElementById('music');
-    const musicBtn = document.getElementById('musicBtn');
+        <img src="1001487904.jpg" alt="Your birthday card for Emily" class="birthday-card-image">
 
-    const birthdayDate = new Date('2025-11-05T00:00:00');
+        <div class="message-from-image">
+            <p>From the day we met, I knew you were someone special. Your friendship has brought so much light and laughter into my life, and I'm so grateful for every moment.</p>
+            <p>Watching you chase your dreams is inspiring, and I'm so incredibly proud of the person you are. You deserve all the happiness, joy, and success in the world today and always.</p>
+            <p>Sending you all my best wishes on your special day. I hope it's as amazing as you are.</p>
+            <p class="love">Love, David</p>
+        </div>
 
-    function updateCountdown() {
-      const now = new Date();
-      const diff = birthdayDate - now;
+        <hr>
 
-      if (diff <= 0) {
-        countdownEl.style.display = 'none';
-        birthdayEl.classList.remove('hidden');
-        musicBtn.classList.remove('hidden');
-        startCelebration();
-        return;
-      }
+        <div class="more-talks">
+            <h3>A Few More Words...</h3>
+            <p>Emily, you have a kindness that brightens every room and a heart that is so full of love. I hope this day brings you even a fraction of the joy you give to everyone around you.</p>
+            <p>Never change who you are. The world is so much better for having you in it.</p>
+            
+            <blockquote>
+                "The best and most beautiful things in the world cannot be seen or even touched - they must be felt with the heart." <br>- Helen Keller
+            </blockquote>
+            <blockquote>
+                "Count your life by smiles, not tears. Count your age by friends, not years. Happy birthday!"
+            </blockquote>
+        </div>
 
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-      const mins = Math.floor((diff / (1000 * 60)) % 60);
-      const secs = Math.floor((diff / 1000) % 60);
+    </div>
 
-      countdownEl.innerHTML = `🎉 ${days}d ${hours}h ${mins}m ${secs}s until Emily’s Birthday 💖`;
-    }
+    <script>
+        // --- THIS IS THE IMPORTANT PART ---
+        // Set the date of her birthday (Year, Month-1, Day)
+        // NOTE: JavaScript counts months from 0 (Jan=0, Feb=1... Nov=10)
+        // This is set to November 7, 2025. Change the year if needed!
+        const birthdayDate = new Date(2025, 10, 7, 0, 0, 0).getTime();
 
-    function startCelebration() {
-      music.play().catch(() => musicBtn.classList.remove('hidden'));
-      launchHearts();
-      setInterval(() => confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 } }), 2000);
-    }
+        // Get the elements from the HTML
+        const countdownScreen = document.getElementById('countdown-screen');
+        const birthdayScreen = document.getElementById('birthday-screen');
+        const heartsContainer = document.querySelector('.hearts-container');
 
-    musicBtn.addEventListener('click', () => {
-      if (music.paused) {
-        music.play();
-        musicBtn.textContent = "🔇 Mute Music";
-      } else {
-        music.pause();
-        musicBtn.textContent = "🔈 Play Music";
-      }
-    });
+        // Get the timer display elements
+        const daysEl = document.getElementById('days');
+        const hoursEl = document.getElementById('hours');
+        const minutesEl = document.getElementById('minutes');
+        const secondsEl = document.getElementById('seconds');
 
-    function launchHearts() {
-      setInterval(() => {
-        const heart = document.createElement('div');
-        heart.innerHTML = '💖';
-        heart.classList.add('heart');
-        heart.style.left = Math.random() * 100 + 'vw';
-        heart.style.animationDuration = (4 + Math.random() * 3) + 's';
-        document.body.appendChild(heart);
-        setTimeout(() => heart.remove(), 7000);
-      }, 500);
-    }
+        // Run the countdown timer every second
+        const timerInterval = setInterval(updateTimer, 1000);
 
-    updateCountdown();
-    setInterval(updateCountdown, 1000);
-  </script>
+        function updateTimer() {
+            const now = new Date().getTime();
+            const distance = birthdayDate - now;
+
+            // If the countdown is over
+            if (distance < 0) {
+                clearInterval(timerInterval);
+                showBirthdayPage();
+                return;
+            }
+
+            // Calculate time
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Display the time (add a "0" if number is less than 10)
+            daysEl.innerHTML = days < 10 ? '0' + days : days;
+            hoursEl.innerHTML = hours < 10 ? '0' + hours : hours;
+            minutesEl.innerHTML = minutes < 10 ? '0' + minutes : minutes;
+            secondsEl.innerHTML = seconds < 10 ? '0' + seconds : seconds;
+        }
+
+        function showBirthdayPage() {
+            // Hide the countdown
+            countdownScreen.style.display = 'none';
+            
+            // Show the birthday page
+            birthdayScreen.style.display = 'block';
+
+            // Start the heart animations
+            createHearts();
+        }
+
+        // --- Heart Animation ---
+        function createHearts() {
+            setInterval(createAHeart, 300);
+        }
+
+        function createAHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️'; // You can also use '🌸' or '✨'
+            
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 5 + 10 + 's'; // 10-15 seconds
+            
+            heartsContainer.appendChild(heart);
+            
+            // Remove the heart after it finishes animating
+            setTimeout(() => {
+                heart.remove();
+            }, 15000);
+        }
+
+        // Initial check in case the birthday is already here
+        updateTimer();
+    </script>
 </body>
 </html>
