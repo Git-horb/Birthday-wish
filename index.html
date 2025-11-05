@@ -89,13 +89,15 @@
             border-radius: 10px;
             border-left: 5px solid #e85a9b;
         }
-
+        
+        /* New Image Styling */
         .birthday-card-image {
             max-width: 100%;
             height: auto;
             border-radius: 10px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             margin: 20px 0;
+            border: 3px solid #ff99c8; /* Soft pink border */
         }
 
         .message-from-image, .more-talks {
@@ -157,7 +159,7 @@
 
         /* Choir Effect Styling */
         .choir-member {
-            position: fixed; /* Use fixed so it stays central */
+            position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
@@ -167,6 +169,7 @@
             pointer-events: none;
             text-shadow: 0 0 8px rgba(255, 255, 255, 0.7);
             animation: singOut 3s ease-out forwards;
+            z-index: 20; /* Ensure text is above everything */
         }
 
         .choir-member:nth-child(even) {
@@ -192,7 +195,7 @@
             }
         }
         
-        /* Audio Player Styling (Optional: controls hidden) */
+        /* Audio Player Styling */
         audio {
             display: none;
         }
@@ -221,20 +224,20 @@
         <h2 class="khmer-text">រីករាយ​ថ្ងៃ​កំណើត</h2>
         
         <div class="david-message">
-            <p>David wishes you a very special birthday, and so you know, he does care!</p>
+            <p>ដេវីត សូមជូនពរអ្នកនូវថ្ងៃកំណើតដ៏ពិសេស ហើយគាត់ពិតជាយកចិត្តទុកដាក់ មានសុភមង្គលច្រើនឆ្នាំទៅមុខទៀត។ .</p>
         </div>
 
-        <audio id="birthdaySong" src="happy_birthday.mp3" preload="auto"></audio>
+        <audio id="birthdaySong" src="https://cdn.davex.site/cdn/audio/Hbd-emly.mp3" preload="auto"></audio>
         
         <div id="choir-effect"></div>
 
-        <img src="1001487904.jpg" alt="Your birthday card for Emily" class="birthday-card-image">
+        <img src="https://images.unsplash.com/photo-1549488344-938b81d48c08?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NTMzNXwwfDF8c2VhcmNofDE5fHxzb2Z0JTIwcGluayUyMGJpcnRoZGF5JTIwY2FyZHxlbnwwfHx8fDE3MDAxNTA0NTZ8MA&ixlib=rb-4.0.3&q=80&w=1080" alt="A beautiful, soft pink birthday card with flowers" class="birthday-card-image">
 
         <div class="message-from-image">
             <p>From the day we met, I knew you were someone special. Your friendship has brought so much light and laughter into my life, and I'm so grateful for every moment.</p>
             <p>Watching you chase your dreams is inspiring, and I'm so incredibly proud of the person you are. You deserve all the happiness, joy, and success in the world today and always.</p>
             <p>Sending you all my best wishes on your special day. I hope it's as amazing as you are.</p>
-            <p class="love">Love, David</p>
+            <p class="love">ស្នេហា, David</p>
         </div>
 
         <hr>
@@ -245,7 +248,7 @@
             <p>Never change who you are. The world is so much better for having you in it.</p>
             
             <blockquote>
-                "The best and most beautiful things in the world cannot be seen or even touched - they must be felt with the heart." <br>- Helen Keller
+                "The best and most beautiful things in the world cannot be seen or even touched - they must be felt with the heart." <br>- David..
             </blockquote>
             <blockquote>
                 "Count your life by smiles, not tears. Count your age by friends, not years. Happy birthday!"
@@ -257,7 +260,6 @@
     <script>
         // --- DATE SETTING ---
         // Current date is Nov 5, 2025. Birthday is Nov 7.
-        // Set the date of her birthday (Year, Month-1, Day)
         // NOTE: JavaScript counts months from 0 (Jan=0, Feb=1... Nov=10)
         const birthdayDate = new Date(2025, 10, 5, 0, 0, 0).getTime();
 
@@ -304,10 +306,8 @@
 
             // Attempt to play the song
             birthdaySong.play().catch(error => {
-                // If autoplay fails (common on mobile/some browsers), 
-                // we'll show a quick instruction or a button.
                 console.log("Autoplay prevented:", error);
-                // Create a temporary play button for the user
+                // Create a temporary play button for the user if autoplay fails
                 const playButton = document.createElement('button');
                 playButton.textContent = "Click to hear your song!";
                 playButton.style.cssText = 'padding: 10px 20px; background-color: #d93f87; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px;';
@@ -315,13 +315,14 @@
                     birthdaySong.play();
                     playButton.remove();
                 };
-                birthdayScreen.insertBefore(playButton, birthdayScreen.children[2]);
+                // Insert the button before the David message for visibility
+                birthdayScreen.insertBefore(playButton, document.querySelector('.david-message'));
             });
             
             startChoirEffect();
         }
 
-        // --- Heart Animation Functions (No change) ---
+        // --- Heart Animation Functions ---
         function createHearts() {
             setInterval(createAHeart, 300);
         }
@@ -350,18 +351,18 @@
         function startChoirEffect() {
             choirEffectContainer.innerHTML = '';
             currentLyricIndex = 0;
-            // Adjust the 1500ms timing if your generated song is slower or faster
+            // The interval is set to 1500ms (1.5 seconds) to match a standard singing pace.
             const choirInterval = setInterval(() => {
                 if (currentLyricIndex < choirLyrics.length) {
                     createChoirMember(choirLyrics[currentLyricIndex]);
                     currentLyricIndex++;
                 } else {
-                    // Start over, looping the song and effect
+                    // Loop the song and effect after all lyrics are shown
                     currentLyricIndex = 0;
-                    birthdaySong.currentTime = 0; // Rewind song
+                    birthdaySong.currentTime = 0;
                     birthdaySong.play();
                 }
-            }, 1500);
+            }, 1500); 
         }
 
         function createChoirMember(text) {
@@ -369,8 +370,7 @@
             choirMember.classList.add('choir-member');
             choirMember.textContent = text;
             
-            // Randomize position slightly for a "crowd" effect (fixed position)
-            // We use fixed positioning so the text stays in the center viewport
+            // Randomize position slightly around the center
             choirMember.style.left = `calc(${Math.random() * 40 + 30}vw)`;
             choirMember.style.top = `calc(${Math.random() * 40 + 30}vh)`;
             
