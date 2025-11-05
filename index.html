@@ -258,128 +258,140 @@
     </div>
 
     <script>
-        // --- DATE SETTING ---
-        // Current date is Nov 5, 2025. Birthday is Nov 7.
-        // NOTE: JavaScript counts months from 0 (Jan=0, Feb=1... Nov=10)
-        const birthdayDate = new Date(2025, 10, 5, 0, 0, 0).getTime();
+         <script>
+    // --- DATE SETTING ---
+    // Birthday is November 7th.
+    // NOTE: JavaScript counts months from 0 (Jan=0, Feb=1... Nov=10)
+    const birthdayDate = new Date(2025, 10, 5, 0, 0, 0).getTime();
 
-        // Get the elements from the HTML
-        const countdownScreen = document.getElementById('countdown-screen');
-        const birthdayScreen = document.getElementById('birthday-screen');
-        const heartsContainer = document.querySelector('.hearts-container');
-        const birthdaySong = document.getElementById('birthdaySong');
-        const choirEffectContainer = document.getElementById('choir-effect');
+    // Get the elements from the HTML
+    const countdownScreen = document.getElementById('countdown-screen');
+    const birthdayScreen = document.getElementById('birthday-screen');
+    const heartsContainer = document.querySelector('.hearts-container');
+    const birthdaySong = document.getElementById('birthdaySong');
+    const choirEffectContainer = document.getElementById('choir-effect');
 
-        const daysEl = document.getElementById('days');
-        const hoursEl = document.getElementById('hours');
-        const minutesEl = document.getElementById('minutes');
-        const secondsEl = document.getElementById('seconds');
+    const daysEl = document.getElementById('days');
+    const hoursEl = document.getElementById('hours');
+    const minutesEl = document.getElementById('minutes');
+    const secondsEl = document.getElementById('seconds');
 
-        const timerInterval = setInterval(updateTimer, 1000);
+    const timerInterval = setInterval(updateTimer, 1000);
 
-        function updateTimer() {
-            const now = new Date().getTime();
-            const distance = birthdayDate - now;
+    function updateTimer() {
+        const now = new Date().getTime();
+        const distance = birthdayDate - now;
 
-            if (distance < 0) {
-                clearInterval(timerInterval);
-                showBirthdayPage();
-                return;
+        if (distance < 0) {
+            clearInterval(timerInterval);
+            showBirthdayPage();
+            return;
+        }
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        daysEl.innerHTML = days < 10 ? '0' + days : days;
+        hoursEl.innerHTML = hours < 10 ? '0' + hours : hours;
+        minutesEl.innerHTML = minutes < 10 ? '0' + minutes : minutes;
+        secondsEl.innerHTML = seconds < 10 ? '0' + seconds : seconds;
+    }
+
+    function showBirthdayPage() {
+        countdownScreen.style.display = 'none';
+        birthdayScreen.style.display = 'block';
+
+        createHearts();
+
+        // Attempt to play the song
+        birthdaySong.play().catch(error => {
+            console.log("Autoplay prevented:", error);
+            // Create a temporary play button for the user if autoplay fails
+            const playButton = document.createElement('button');
+            playButton.textContent = "Click to hear your song!";
+            playButton.style.cssText = 'padding: 10px 20px; background-color: #d93f87; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px;';
+            playButton.onclick = () => {
+                birthdaySong.play();
+                playButton.remove();
+            };
+            birthdayScreen.insertBefore(playButton, document.querySelector('.david-message'));
+        });
+        
+        startChoirEffect();
+    }
+
+    // --- Heart Animation Functions (No Change) ---
+    function createHearts() {
+        setInterval(createAHeart, 300);
+    }
+
+    function createAHeart() {
+        const heart = document.createElement('div');
+        heart.classList.add('heart');
+        heart.innerHTML = '❤️';
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.animationDuration = Math.random() * 5 + 10 + 's';
+        heartsContainer.appendChild(heart);
+        setTimeout(() => { heart.remove(); }, 15000);
+    }
+
+    // --- Choir Effect Functions (ADJUSTED) ---
+    const choirLyrics = [
+        "Happy Birthday",
+        "to you!",
+        "Happy Birthday",
+        "dear Emily!",
+        "Happy Birthday",
+        "to you!"
+    ];
+    let currentLyricIndex = 0;
+
+    function startChoirEffect() {
+        choirEffectContainer.innerHTML = '';
+        currentLyricIndex = 0;
+        
+        // This calculates how many times the short lyric array needs to repeat 
+        // to cover the full 3-minute length of your song (180 seconds).
+        const repeatedLyrics = [];
+        const songDurationSeconds = 3 * 60; // 180 seconds
+        const wordsPerCycle = choirLyrics.length; // 6 words
+        const intervalMs = 1500; // 1.5 seconds per word
+        const cycleDurationSeconds = (wordsPerCycle * intervalMs) / 1000; // 9 seconds per full cycle
+        const cyclesNeeded = Math.ceil(songDurationSeconds / cycleDurationSeconds); // ~20 cycles
+
+        // Populate the lyric array to last the full 3 minutes
+        for (let i = 0; i < cyclesNeeded; i++) {
+            repeatedLyrics.push(...choirLyrics);
+        }
+
+        const choirInterval = setInterval(() => {
+            if (currentLyricIndex < repeatedLyrics.length) {
+                createChoirMember(repeatedLyrics[currentLyricIndex]);
+                currentLyricIndex++;
+            } else {
+                // Stop the visual effect once the lyrics array is exhausted (after 3 minutes)
+                clearInterval(choirInterval); 
             }
+        }, intervalMs); 
+    }
 
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    function createChoirMember(text) {
+        const choirMember = document.createElement('div');
+        choirMember.classList.add('choir-member');
+        choirMember.textContent = text;
+        
+        // Randomize position slightly around the center
+        choirMember.style.left = `calc(${Math.random() * 40 + 30}vw)`;
+        choirMember.style.top = `calc(${Math.random() * 40 + 30}vh)`;
+        
+        choirEffectContainer.appendChild(choirMember);
 
-            daysEl.innerHTML = days < 10 ? '0' + days : days;
-            hoursEl.innerHTML = hours < 10 ? '0' + hours : hours;
-            minutesEl.innerHTML = minutes < 10 ? '0' + minutes : minutes;
-            secondsEl.innerHTML = seconds < 10 ? '0' + seconds : seconds;
-        }
+        setTimeout(() => { choirMember.remove(); }, 3000);
+    }
 
-        function showBirthdayPage() {
-            countdownScreen.style.display = 'none';
-            birthdayScreen.style.display = 'block';
-
-            createHearts();
-
-            // Attempt to play the song
-            birthdaySong.play().catch(error => {
-                console.log("Autoplay prevented:", error);
-                // Create a temporary play button for the user if autoplay fails
-                const playButton = document.createElement('button');
-                playButton.textContent = "Click to hear your song!";
-                playButton.style.cssText = 'padding: 10px 20px; background-color: #d93f87; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px;';
-                playButton.onclick = () => {
-                    birthdaySong.play();
-                    playButton.remove();
-                };
-                // Insert the button before the David message for visibility
-                birthdayScreen.insertBefore(playButton, document.querySelector('.david-message'));
-            });
-            
-            startChoirEffect();
-        }
-
-        // --- Heart Animation Functions ---
-        function createHearts() {
-            setInterval(createAHeart, 300);
-        }
-
-        function createAHeart() {
-            const heart = document.createElement('div');
-            heart.classList.add('heart');
-            heart.innerHTML = '❤️';
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = Math.random() * 5 + 10 + 's';
-            heartsContainer.appendChild(heart);
-            setTimeout(() => { heart.remove(); }, 15000);
-        }
-
-        // --- Choir Effect Functions ---
-        const choirLyrics = [
-            "Happy Birthday",
-            "to you!",
-            "Happy Birthday",
-            "dear Emily!",
-            "Happy Birthday",
-            "to you!"
-        ];
-        let currentLyricIndex = 0;
-
-        function startChoirEffect() {
-            choirEffectContainer.innerHTML = '';
-            currentLyricIndex = 0;
-            // The interval is set to 1500ms (1.5 seconds) to match a standard singing pace.
-            const choirInterval = setInterval(() => {
-                if (currentLyricIndex < choirLyrics.length) {
-                    createChoirMember(choirLyrics[currentLyricIndex]);
-                    currentLyricIndex++;
-                } else {
-                    // Loop the song and effect after all lyrics are shown
-                    currentLyricIndex = 0;
-                    birthdaySong.currentTime = 0;
-                    birthdaySong.play();
-                }
-            }, 1500); 
-        }
-
-        function createChoirMember(text) {
-            const choirMember = document.createElement('div');
-            choirMember.classList.add('choir-member');
-            choirMember.textContent = text;
-            
-            // Randomize position slightly around the center
-            choirMember.style.left = `calc(${Math.random() * 40 + 30}vw)`;
-            choirMember.style.top = `calc(${Math.random() * 40 + 30}vh)`;
-            
-            choirEffectContainer.appendChild(choirMember);
-
-            setTimeout(() => { choirMember.remove(); }, 90000);
-        }
-
-        updateTimer();
-    </script>
+    updateTimer();
+</script>
 </body>
 </html>
